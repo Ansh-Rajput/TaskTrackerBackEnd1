@@ -4,6 +4,8 @@ const app = express();
 const cors = require("cors");
 require("./db/conn");
 
+const taskRoutes = require("./routes/taskRoutes");
+
 const PORT = 8000;
 
 const session = require("express-session");
@@ -16,7 +18,7 @@ const clientsecret = process.env.GOOGLE_CLIENT_SECRET;
 
 
 app.use(cors({
-    origin: `${process.env.FRONTEND_URL}:5173`,
+    origin: `${process.env.FRONTEND_URL}`,
     methods: "GET,POST,PUT,DELETE",
     credentials: true
 }));
@@ -76,8 +78,8 @@ passport.deserializeUser((user, done) => {
 app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 app.get("/auth/google/callback", passport.authenticate("google", {
-    successRedirect: `${process.env.FRONTEND_URL}:5173`,
-    failureRedirect: `${process.env.FRONTEND_URL}:5173`
+    successRedirect: `${process.env.FRONTEND_URL}`,
+    failureRedirect: `${process.env.FRONTEND_URL}/auth/google/callback`
 }))
 
 app.get("/login/sucess", async (req, res) => {
@@ -92,10 +94,13 @@ app.get("/login/sucess", async (req, res) => {
 app.get("/logout", (req, res, next) => {
     req.logout(function (err) {
         if (err) { return next(err) }
-        res.redirect(`${process.env.FRONTEND_URL}:5173`);
+        res.redirect(`${process.env.FRONTEND_URL}`);
     });
     console.log("working");
 })
+
+
+app.use('/tasks', taskRoutes);
 
 app.listen(PORT, () => {
     console.log(`server start at port no ${PORT}`)
