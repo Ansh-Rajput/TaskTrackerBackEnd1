@@ -18,7 +18,7 @@ const clientsecret = process.env.GOOGLE_CLIENT_SECRET;
 
 
 app.use(cors({
-    origin: `${process.env.FRONTEND_URL}`,
+    origin: [`${process.env.FRONTEND_URL}`, '*'],
     methods: "GET,POST,PUT,DELETE",
     credentials: true
 }));
@@ -79,7 +79,7 @@ app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "em
 
 app.get("/auth/google/callback", passport.authenticate("google", {
     successRedirect: `${process.env.FRONTEND_URL}`,
-    failureRedirect: `${process.env.FRONTEND_URL}/auth/google/callback`
+    failureRedirect: `${process.env.FRONTEND_URL}`
 }))
 
 app.get("/login/sucess", async (req, res) => {
