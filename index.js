@@ -36,6 +36,15 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get("/getAllUsers", async (req, res) => {
+    try {
+        let users = await userdb.find();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: "some error occured while connectiong to backend" });
+    }
+})
+
 passport.use(
     new OAuth2Strategy({
         clientID: clientid,
